@@ -4,14 +4,15 @@ from plone.memoize import ram
 from plone.supermodel.model import finalizeSchemas, SchemaClass
 
 from .schemaeditor import SCHEMATA_KEY, get_ttw_edited_schema, model_key
-from .userdataschema import IUserDataSchemaProvider, IUserDataZ3CSchema
+from .userdataschema import (IUserDataSchemaProvider, IUserDataZ3CSchema,
+                             IRegisterSchemaProvider)
+from plone.app.users.browser.z3cregister import IZ3CRegisterSchema
 
 
-class UserDataSchemaProvider(object):
-    implements(IUserDataSchemaProvider)
-    baseSchema = IUserDataZ3CSchema
+class BaseMemberScheamProvider(object):
+    """Base mixin class for members schema providers
+    """
 
-    @ram.cache(model_key)
     def getSchema(self):
         """
         """
@@ -27,3 +28,18 @@ class UserDataSchemaProvider(object):
                              attrs=attrs)
         finalizeSchemas(schema)
         return schema
+
+
+class UserDataSchemaProvider(BaseMemberScheamProvider):
+    implements(IUserDataSchemaProvider)
+    baseSchema = IUserDataZ3CSchema
+
+    @ram.cache(model_key)
+    def getSchema(self):
+        return super(UserDataSchemaProvider, self).getSchema()
+
+
+class RegisterSchemaProvider(BaseMemberScheamProvider):
+    implements(IRegisterSchemaProvider)
+    baseSchema = IZ3CRegisterSchema
+
