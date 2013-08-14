@@ -1,3 +1,4 @@
+import copy
 from zope.interface import implements
 from plone.memoize import ram
 from plone.supermodel.model import finalizeSchemas, SchemaClass
@@ -18,7 +19,8 @@ class UserDataSchemaProvider(object):
                       for n in self.baseSchema])
         ttwschema = get_ttw_edited_schema()
         if ttwschema:
-            attrs.update(dict([(a, ttwschema[a]) for a in ttwschema]))
+            attrs.update(dict([(a, copy.deepcopy(ttwschema[a]))
+                               for a in ttwschema]))
         schema = SchemaClass(SCHEMATA_KEY,
                              bases=(self.baseSchema,),
                              attrs=attrs)
