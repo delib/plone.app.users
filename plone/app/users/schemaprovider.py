@@ -15,12 +15,13 @@ class UserDataSchemaProvider(object):
     def getSchema(self):
         """
         """
-        attrs = dict([(n, self.baseSchema[n])
-                      for n in self.baseSchema])
+        def copySchemaAttrs(schema):
+            return dict([(a, copy.deepcopy(schema[a])) for a in schema])
+
+        attrs = copySchemaAttrs(self.baseSchema)
         ttwschema = get_ttw_edited_schema()
         if ttwschema:
-            attrs.update(dict([(a, copy.deepcopy(ttwschema[a]))
-                               for a in ttwschema]))
+            attrs.update(copySchemaAttrs(ttwschema))
         schema = SchemaClass(SCHEMATA_KEY,
                              bases=(self.baseSchema,),
                              attrs=attrs)
