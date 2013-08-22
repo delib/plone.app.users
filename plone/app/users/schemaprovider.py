@@ -13,6 +13,7 @@ class BaseMemberScheamProvider(object):
     """Base mixin class for members schema providers
     """
 
+    @ram.cache(lambda *args, **kw: "%s-%s" % (model_key(), args))
     def getSchema(self):
         """
         """
@@ -33,10 +34,6 @@ class BaseMemberScheamProvider(object):
 class UserDataSchemaProvider(BaseMemberScheamProvider):
     implements(IUserDataSchemaProvider)
     baseSchema = IUserDataZ3CSchema
-
-    @ram.cache(model_key)
-    def getSchema(self):
-        return super(UserDataSchemaProvider, self).getSchema()
 
 
 class RegisterSchemaProvider(BaseMemberScheamProvider):
