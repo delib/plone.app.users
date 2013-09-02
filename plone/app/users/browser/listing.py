@@ -1,3 +1,4 @@
+from Acquisition import aq_inner, aq_parent
 from zope.component import getUtility
 from z3c.form import button, form
 
@@ -69,4 +70,10 @@ class FieldOrderView(order.FieldOrderView):
     def delete(self):
         self.checkEditableField()
         super(FieldOrderView, self).delete()
+        # When js is disabled we should redirect back to fields management
+        # page. Deleting the ttw field with js enabled sends "POST" request
+        # and it is the simplest way to detect browser js configuration.
+        if self.request.method != "POST":
+            self.request.response.redirect(
+                aq_parent(aq_inner(self.context)).absolute_url())
 
