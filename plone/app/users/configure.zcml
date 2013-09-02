@@ -11,6 +11,9 @@
     <utility provides=".userdataschema.IUserDataSchemaProvider"
              factory=".schemaprovider.UserDataSchemaProvider"/>
 
+    <utility provides=".userdataschema.IRegisterSchemaProvider"
+             factory=".schemaprovider.RegisterSchemaProvider"/>
+
     <utility
         name="plone.app.users.UsersMetadataSchemaExporter"
         factory=".schemaeditor.UsersMetadataSchemaExporter"

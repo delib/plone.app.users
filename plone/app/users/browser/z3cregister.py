@@ -35,7 +35,7 @@ from .register import IRegisterSchema, IAddUserSchema, JOIN_CONST
 from ..userdataschema import IUserDataZ3CSchema, SCHEMATA_KEY
 
 from ..schemaeditor import get_ttw_edited_schema
-from ..userdataschema import IUserDataSchemaProvider
+from ..userdataschema import IUserDataSchemaProvider, IRegisterSchemaProvider
 from plone.app.users.browser.z3cpersonalpreferences import UserDataPanelSchemaAdapter
 
 class IZ3CRegisterSchema(IRegisterSchema, IUserDataZ3CSchema):
@@ -51,30 +51,14 @@ class BaseRegistrationForm(AutoExtensibleForm, form.Form):
     description = u""
     formErrorsMessage = _('There were errors')
     ignoreContext = True
-    baseSchema = IZ3CRegisterSchema
-
+    schema = IZ3CRegisterSchema
     # this attribute indicates if user was successfully registered
     _finishedRegister = False
-
-    _schema = None
-    @property
-    def schema(self):
-        """
-        Merge together form fields and fields configured TTW
-        """
-        if self._schema is None:
-            ttw = get_ttw_edited_schema()
-            if not ttw:
-                ttw = []
-            ttwd = dict([(a, ttw[a]) for a in ttw])
-            self.ttw_field_ids = [a for a in ttw]
-            self._schema = SchemaClass(SCHEMATA_KEY,
-                bases=(self.baseSchema,), attrs=ttwd)
-        return self._schema
 
     def __init__(self, *a, **kw):
         self.omits = {}
         super(BaseRegistrationForm, self).__init__(*a, **kw)
+        self.schema = getUtility(IRegisterSchemaProvider).getSchema()
 
     def render(self):
         if self._finishedRegister:
@@ -489,7 +473,7 @@ class BaseRegistrationForm(AutoExtensibleForm, form.Form):
                 # as the ttw schema is a generated supermodel,
                 # just insert a relevant adapter for it
                 if INavigationRoot.providedBy(self.context):
-                    if not queryAdapter(self.context, self.schema):
+                    if not queryAdapter(self.context, schema):
                         provideAdapter(
                             UserDataPanelSchemaAdapter,
                             (INavigationRoot,),

@@ -106,3 +106,13 @@ class IUserDataSchemaProvider(Interface):
         """
         Return base user schema + TTW Fields
         """
+
+
+class IRegisterSchemaProvider(Interface):
+    """
+    """
+
+    def getSchema():
+        """
+        Return base register schema + TTW Fields
+        """

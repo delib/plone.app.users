@@ -30,6 +30,9 @@ from plone.supermodel.serializer import serialize
 from plone.supermodel.utils import ns
 from plone.supermodel import loadString
 
+from plone.app.layout.navigation.interfaces import INavigationRoot
+from plone.app.users.browser.z3cpersonalpreferences import UserDataPanelSchemaAdapter
+
 from userdataschema import (
     IUserDataSchemaProvider,
     SCHEMA_ANNOTATION,
@@ -140,6 +143,7 @@ class MemberSchemaContext(SchemaContext):
             request,
             name=SCHEMATA_KEY
         )
+        provideAdapter(UserDataPanelSchemaAdapter, (INavigationRoot,), schema)
 
     def label(self):
         return _("Edit member fields")
