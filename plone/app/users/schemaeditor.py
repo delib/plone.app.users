@@ -128,7 +128,7 @@ def copy_schema(schema, filter_serializable=False):
     # copy base tagged values
     for i in schema.getTaggedValueTags():
         oschema.setTaggedValue(
-            item, schema.queryTaggedValue(i))
+            i, schema.queryTaggedValue(i))
     finalizeSchemas(oschema)
     return oschema
 
