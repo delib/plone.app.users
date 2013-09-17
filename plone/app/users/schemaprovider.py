@@ -1,10 +1,10 @@
 import copy
 from zope.interface import implements
-from plone.memoize import ram
+from plone.memoize import volatile
 from plone.supermodel.model import finalizeSchemas, SchemaClass
 from plone.supermodel.interfaces import FIELDSETS_KEY
 
-from .schemaeditor import SCHEMATA_KEY, get_ttw_edited_schema, model_key
+from .schemaeditor import SCHEMATA_KEY, get_ttw_edited_schema, model_key, CACHE_CONTAINER
 from .userdataschema import (IUserDataSchemaProvider, IUserDataZ3CSchema,
                              IRegisterSchemaProvider)
 from plone.app.users.browser.z3cregister import IZ3CRegisterSchema
@@ -14,7 +14,8 @@ class BaseMemberScheamProvider(object):
     """Base mixin class for members schema providers
     """
 
-    @ram.cache(lambda *args, **kw: "%s-%s" % (model_key(), args))
+    @volatile.cache(lambda *args, **kw: "%s-%s" % (model_key(), args),
+                    lambda *args: CACHE_CONTAINER)
     def getSchema(self):
         """
         """

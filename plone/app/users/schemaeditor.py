@@ -41,6 +41,7 @@ from userdataschema import (
 )
 
 
+CACHE_CONTAINER = {}
 USERS_NAMESPACE = 'http://namespaces.plone.org/supermodel/users'
 USERS_PREFIX = 'users'
 VALIDATORS_KEY = 'validators'
@@ -150,6 +151,7 @@ class MemberSchemaContext(SchemaContext):
 
 
 def updateSchema(object, event):
+    CACHE_CONTAINER.clear()
     site = getSite()
 
     # get the old schema (currently stored in the annotation)
