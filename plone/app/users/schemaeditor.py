@@ -129,7 +129,7 @@ def copy_schema(schema, filter_serializable=False):
     # copy base tagged values
     for i in schema.getTaggedValueTags():
         oschema.setTaggedValue(
-            item, schema.queryTaggedValue(i))
+            i, schema.queryTaggedValue(i))
     finalizeSchemas(oschema)
     return oschema
 
@@ -365,10 +365,15 @@ def load_ttw_schema(string = None):
 def get_schema(site=None):
     if site is None: site = getSite()
     annotations = IAnnotations(site)
-    schema = annotations.get(SCHEMA_ANNOTATION, '')
+    schema = annotations.get(SCHEMA_ANNOTATION, None)
     # be sure to have something serialized in storage
     if not isinstance(schema, basestring):
-        schema = ""
+        schema =  """
+        <model xmlns="http://namespaces.plone.org/supermodel/schema">
+            <schema name="member-fields">
+            </schema>
+        </model>
+        """
     return schema
 
 

@@ -2,6 +2,7 @@ import copy
 from zope.interface import implements
 from plone.memoize import volatile
 from plone.supermodel.model import finalizeSchemas, SchemaClass
+from plone.supermodel.interfaces import FIELDSETS_KEY
 
 from .schemaeditor import SCHEMATA_KEY, get_ttw_edited_schema, model_key, CACHE_CONTAINER
 from .userdataschema import (IUserDataSchemaProvider, IUserDataZ3CSchema,
@@ -28,6 +29,13 @@ class BaseMemberScheamProvider(object):
         schema = SchemaClass(SCHEMATA_KEY,
                              bases=(self.baseSchema,),
                              attrs=attrs)
+        # copy base tagged values
+        # TODO add tagged values from self.baseSchema
+        if ttwschema:
+            for tag in ttwschema.getTaggedValueTags():
+                value = ttwschema.queryTaggedValue(tag)
+                if value is not None:
+                    schema.setTaggedValue(tag, value)
         finalizeSchemas(schema)
         return schema
 
