@@ -41,7 +41,7 @@ from plone.app.users.browser.z3cpersonalpreferences import UserDataPanelSchemaAd
 class IZ3CRegisterSchema(IRegisterSchema, IUserDataZ3CSchema):
     """Collect all register fields under the same interface"""
 
-from zope.component import provideAdapter, queryAdapter
+from zope.component import queryAdapter
 
 
 class BaseRegistrationForm(AutoExtensibleForm, form.Form):
@@ -470,15 +470,6 @@ class BaseRegistrationForm(AutoExtensibleForm, form.Form):
             # get schema adapter
             schema = self.fields[k].field.interface
             if not schema in adapters:
-                # as the ttw schema is a generated supermodel,
-                # just insert a relevant adapter for it
-                if INavigationRoot.providedBy(self.context):
-                    if not queryAdapter(self.context, schema):
-                        provideAdapter(
-                            UserDataPanelSchemaAdapter,
-                            (INavigationRoot,),
-                            schema
-                        )
                 adapters[schema] = getAdapter(portal, schema)
                 adapters[schema].context = member
 

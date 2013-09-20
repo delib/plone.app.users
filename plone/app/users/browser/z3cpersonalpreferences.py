@@ -1,7 +1,7 @@
 from Acquisition import aq_inner
 from AccessControl import Unauthorized
 
-from zope.component import adapter, getMultiAdapter, getUtility, provideAdapter
+from zope.component import adapter, getMultiAdapter, getUtility
 from zope.event import notify
 from zope.interface import implements, implementer, Invalid, Interface
 
@@ -252,11 +252,6 @@ class UserDataPanelSchemaAdapter(AccountPanelSchemaAdapter):
     def __init__(self, *args, **kwargs):
         super(UserDataPanelSchemaAdapter, self).__init__(*args, **kwargs)
         self.schema = getUtility(IUserDataSchemaProvider).getSchema()
-        # make forms adapters know about ttw fields
-        # we force self.schema as it can be a
-        # generated supermodel with TTw fields
-        provideAdapter(self.__class__, (Interface,), self.schema)
-
 
     def get_portrait(self):
         """If user has default portrait, return none
@@ -299,8 +294,6 @@ class UserDataPanel(AccountPanelForm):
     def __init__(self, *args, **kwargs):
         super(UserDataPanel, self).__init__(*args, **kwargs)
         self.schema = getUtility(IUserDataSchemaProvider).getSchema()
-        # as schema is a generated supermodel, just insert a relevant adapter for it
-        provideAdapter(UserDataPanelSchemaAdapter, (INavigationRoot,), self.schema)
 
     @property
     def description(self):
