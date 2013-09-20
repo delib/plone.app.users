@@ -1,5 +1,6 @@
 import copy
 from zope.interface import implements
+from zope.component import provideAdapter
 from plone.memoize import volatile
 from plone.supermodel.model import finalizeSchemas, SchemaClass
 from plone.supermodel.interfaces import FIELDSETS_KEY
@@ -7,7 +8,9 @@ from plone.supermodel.interfaces import FIELDSETS_KEY
 from .schemaeditor import SCHEMATA_KEY, get_ttw_edited_schema, model_key, CACHE_CONTAINER
 from .userdataschema import (IUserDataSchemaProvider, IUserDataZ3CSchema,
                              IRegisterSchemaProvider)
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.users.browser.z3cregister import IZ3CRegisterSchema
+from plone.app.users.browser.z3cpersonalpreferences import UserDataPanelSchemaAdapter
 
 
 class BaseMemberScheamProvider(object):
@@ -37,6 +40,8 @@ class BaseMemberScheamProvider(object):
                 if value is not None:
                     schema.setTaggedValue(tag, value)
         finalizeSchemas(schema)
+        # Register a relevant adapter for new schema
+        provideAdapter(UserDataPanelSchemaAdapter, (INavigationRoot,), schema)
         return schema
 
 
