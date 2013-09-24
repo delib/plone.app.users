@@ -137,14 +137,12 @@ class MemberSchemaContext(SchemaContext):
     implements(IMemberSchemaContext)
 
     def __init__(self, context, request):
-        self.baseSchema = getUtility(IUserDataSchemaProvider).getSchema()
-        schema = copy_schema(self.baseSchema, filter_serializable=True)
+        schema = getUtility(IUserDataSchemaProvider).getSchema()
         super(MemberSchemaContext, self).__init__(
             schema,
             request,
             name=SCHEMATA_KEY
         )
-        provideAdapter(UserDataPanelSchemaAdapter, (INavigationRoot,), schema)
 
     def label(self):
         return _("Edit member fields")
