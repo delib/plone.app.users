@@ -56,6 +56,7 @@ field_type_mapping = {
     "Choice": 'text',
     "List": 'text',
     "RichText": "text",
+    "Set": "lines",
 }
 
 
