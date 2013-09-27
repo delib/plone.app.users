@@ -55,6 +55,7 @@ field_type_mapping = {
     "Date": 'date',
     "Choice": 'text',
     "List": 'text',
+    "RichText": "text",
 }
 
 
